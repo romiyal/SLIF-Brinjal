@@ -9,7 +9,7 @@ SLIF-Brinjal (Sri Lanka In-Field Brinjal) is a comprehensive, field-acquired ima
 **Official Dataset Link**: [Mendeley Data](https://data.mendeley.com/preview/6yg6vktrc2?a=2d8cd4ad-ab73-46f1-b908-0b1b7bd8b97a)
 
 <div style="display: flex; align-items: center; justify-content: space-between;">
-  <img src="Images/srilankaregions.png" height="300">
+  <img src="Images/srilankaregions.png" height="400">
   <img src="Images/creationpipeline.png" height="300">
 </div>
 
