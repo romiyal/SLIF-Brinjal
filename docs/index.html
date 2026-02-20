@@ -10,7 +10,7 @@
       rel="stylesheet"
     />
     <style>
-      /* Base project image styling */
+      /* Base Image Styling */
       .project-img {
         display: block;
         margin: 20px auto;
@@ -19,37 +19,53 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
 
-      /* Flex container for side-by-side images */
+      /* Flex Row for Side-by-Side Images */
       .dataset-images-row {
         display: flex;
         justify-content: center;
-        gap: 30px;
-        flex-wrap: wrap; /* Ensures responsiveness on smaller screens */
+        align-items: center;
+        gap: 25px;
+        flex-wrap: wrap; 
         margin: 40px 0;
       }
 
-      /* Specific styling for the side-by-side visuals */
+      /* Specific Dataset Visuals (Height: 300px) */
       .dataset-visual {
         height: 300px; 
         width: auto;
         object-fit: contain;
-        border-radius: 8px;
+        border-radius: 12px;
         transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         cursor: pointer;
-        filter: grayscale(10%); /* Slight muted look by default */
+        background: #fff;
+        padding: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
       }
 
-      /* Hover Effects */
+      /* Hover Interaction */
       .dataset-visual:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        filter: grayscale(0%) brightness(1.05);
+        transform: translateY(-8px) scale(1.03);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        filter: brightness(1.05);
       }
 
       .img-container-full {
         width: 100%;
         text-align: center;
         margin-bottom: 40px;
+      }
+
+      .table-container {
+        overflow-x: auto;
+        margin-top: 20px;
+      }
+
+      /* Responsive fix for side-by-side */
+      @media (max-width: 768px) {
+        .dataset-visual {
+          height: auto;
+          width: 90%;
+        }
       }
     </style>
   </head>
@@ -85,13 +101,13 @@
           <div class="split-content">
             <div class="text-block">
               <p>
-                Early in-field recognition of plant diseases contributes to lower crop losses and improved precision agriculture. This study presents the <strong>SLIF-Brinjal</strong> dataset, a field-acquired image collection containing <strong>8,987 images</strong> representing seven diseases and healthy leaves.
+                Early in-field recognition of plant diseases contributes to lower crop losses and improved precision agriculture. This study presents the <strong>SLIF-Brinjal</strong> dataset, a field-acquired image collection containing <strong>8,987 images</strong> representing seven diseases and healthy leaves, collected across multiple agro-climatic zones in Sri Lanka.
               </p>
             </div>
           </div>
           
           <div class="img-container-full">
-            <img src="../Images/plantdiseasedatasets.png" alt="Dataset Comparison" class="project-img">
+            <img src="Images/plantdiseasedatasets.png" alt="Dataset Comparison" class="project-img">
           </div>
 
           <div class="abstract-grid">
@@ -104,8 +120,8 @@
               <p>Total Classes</p>
             </div>
             <div class="card">
-              <h3>Lightweight</h3>
-              <p>Model Testing</p>
+              <h3>94%+</h3>
+              <p>Peak Accuracy</p>
             </div>
           </div>
         </div>
@@ -117,7 +133,7 @@
           <div class="dataset-grid">
             <div class="dataset-info">
               <p>
-                The dataset was built in stages, starting with field images and expanded using a modified <strong>AugMix</strong> method to balance classes while preserving ecological validity.
+                The dataset was built in stages, starting with 1,459 field images and later expanded using a modified <strong>AugMix</strong> method to balance classes while preserving ecological validity.
               </p>
               <ul class="disease-list">
                 <li>Bacterial Blight</li>
@@ -150,8 +166,8 @@
           </div>
 
           <div class="dataset-images-row">
-            <img src="../Images/pathogenplantdiseases.png" alt="Pathogen Visualization" class="dataset-visual">
-            <img src="../Images/srilankaregions.png" alt="Regional Distribution" class="dataset-visual">
+            <img src="Images/pathogenplantdiseases.png" alt="Pathogen Visualization" class="dataset-visual">
+            <img src="Images/srilankaregions.png" alt="Regional Distribution" class="dataset-visual">
           </div>
         </div>
       </section>
@@ -162,11 +178,12 @@
           <div class="method-content">
             <div class="method-text">
               <p>
-                The research focuses on the performance of the dataset across standard lightweight architectures. We utilize a creation pipeline that balances the dataset through advanced augmentation.
+                We evaluated the dataset using lightweight deep learning models. This approach establishes the dataset as suitable for training and assessing resource-efficient models in in-field settings.
               </p>
             </div>
-            <img src="../Images/creationpipeline.png" alt="Creation Pipeline" class="project-img">
-            <img src="../Images/modifiedaugmix.pnf.png" alt="AugMix Methodology" class="project-img">
+            
+            <img src="Images/creationpipeline.png" alt="Creation Pipeline" class="project-img">
+            <img src="Images/modifiedaugmix.pnf.png" alt="AugMix Methodology" class="project-img">
           </div>
         </div>
       </section>
@@ -174,7 +191,7 @@
       <section id="benchmark" class="section alt-bg">
         <div class="container">
           <h2>Benchmark Results</h2>
-          <p>Performance comparison across standard lightweight architectures using stratified five-fold cross-validation.</p>
+          <p>Evaluation on four standard lightweight architectures using stratified five-fold cross-validation.</p>
           <div class="table-container">
             <table>
               <thead>
@@ -193,10 +210,11 @@
               </tbody>
             </table>
           </div>
+          
           <div class="results-visuals mt-40">
             <div class="visual-card">
                <h3>Model Interpretation (t-SNE)</h3>
-               <img src="../Images/t-sne.png" alt="t-SNE visualization" class="project-img">
+               <img src="Images/t-sne.png" alt="t-SNE visualization" class="project-img">
             </div>
           </div>
         </div>
@@ -204,7 +222,11 @@
     </main>
 
     <footer>
-      <p>&copy; 2025 SLIF-Brinjal Project. University of Peradeniya.</p>
+      <p>
+        &copy; 2025 SLIF-Brinjal Project. Department of Computer Engineering, University of Peradeniya.
+      </p>
     </footer>
+
+    <script src="script.js"></script>
   </body>
 </html>
