@@ -1,0 +1,325 @@
+\documentclass[fleqn,10pt]{wlscirep}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{setspace}
+\usepackage{lineno}
+\usepackage{multirow}
+\usepackage{textcomp}
+
+\title{SLIF-Brinjal: An In-Field Leaf Dataset for Disease Recognition in Precision Agriculture}
+
+\author[1,*]{Romiyal George}
+\author[1]{Sathiyamohan Nishankar}
+\author[2]{Selvarajah Thuseethan}
+\author[3]{Kandiah Pakeerathan}
+\author[1]{Roshan G. Ragel}
+\author[1]{Velalagan Pavindran}
+
+\affil[1]{Department of Computer Engineering, University of Peradeniya, Sri Lanka}
+\affil[2]{Faculty of Science and Technology, Charles Darwin University, Australia}
+\affil[3]{Faculty of Agriculture, University of Jaffna, Sri Lanka}
+
+\affil[*]{romiyalg@eng.pdn.ac.lk}
+
+%\keywords{Keyword1, Keyword2, Keyword3}
+
+\begin{abstract}
+\doublespacing
+Early in-field recognition of plant diseases contributes to lower crop losses and improved precision agriculture. However, most publicly available datasets are typically laboratory-based and do not capture real-world agricultural variability. In particular, fully in-field datasets for \textit{brinjal} leaf disease recognition remain limited. This study presents the \texttt{S}ri \texttt{L}anka \texttt{I}n-\texttt{F}ield \texttt{Brinjal} (\texttt{SLIF-Brinjal}) dataset, a field-acquired image collection containing 8,987 images representing seven diseases and healthy leaves, collected across multiple agro-climatic zones in Sri Lanka. Images were annotated and verified by agricultural pathologists to ensure high-quality ground truth labels. The dataset was built in stages, starting with field images and later expanded using controlled augmentation and a modified \texttt{AugMix} method to balance classes while preserving ecological validity. Evaluation using lightweight deep learning models with stratified five-fold cross-validation shows stable and competitive benchmark results and establishes the dataset as suitable for training and assessing resource-efficient models in in-field settings. The \texttt{SLIF-Brinjal} dataset provides a realistic and publicly available benchmark for advancing deep learning-based brinjal disease recognition in practical agricultural settings.
+
+\end{abstract}
+\begin{document}
+
+\flushbottom
+\maketitle
+% * <john.hammersley@gmail.com> 2015-02-09T12:07:31.197Z:
+%
+%  Click the title above to edit the author information and abstract
+%
+\thispagestyle{empty}
+
+
+\linenumbers
+\doublespacing
+\section{Background \& Summary} \label{sec:backgroundsummary}
+Recognising plant diseases at an early stage helps reduce widespread losses in agricultural production \cite{salka2025plant, george2025past, gunde2026empowering}. Despite their environmental tolerance, \textit{brinjal} plants are prone to pests and diseases that significantly limit growth and fruit formation \cite{devi2025integrated, thomas2025strategic}. Plant disease recognition has traditionally relied on in-person pathologist support, an approach that is often costly, impractical and dependent on expert availability. Consequently, early disease recognition needs to be conducted in the field, where deep learning models can be effectively applied. However, this approach relies on in-field plant disease datasets for training, which remain scarce due to practical challenges in data collection \cite{elfouly2025deep, shafay2025recent, nalwanga2025multi}. The small size and limited diversity of in-field datasets make it harder to train deep learning models that generalise well to field conditions. As a result, these models often fail to achieve reliable performance when deployed in practical agricultural settings.
+
+Recent advances in deep learning have substantially improved the performance of automated plant disease recognition, but most models are trained on laboratory-style images, such as \texttt{PlantVillage}, which feature single leaves on uniform backgrounds and do not reflect real field conditions \cite{moupojou2023fieldplant}. Figure \ref{fig:plantdiseasedatasets} illustrates the geographical distribution and nature of the sample of most widely used plant disease datasets. Most of these datasets are collected under in-field conditions. However, some are constructed in controlled laboratory settings, where images are captured with uniform backgrounds and consistent lighting. Although lab-based settings facilitate high-quality data acquisition and accurate annotation, they provide limited coverage of the variability encountered in real agricultural fields. Consequently, models trained on these datasets often exhibit significant performance degradation when applied to in-field images characterised by complex backgrounds, varying illumination, occlusion, and overlapping foliage \cite{shafik2023systematic}. To mitigate this gap, some in-field plant disease datasets, such as \texttt{FieldPlant} for multi-crop disease detection \cite{moupojou2023fieldplant}, cotton and mixed crops \cite{bishshash2024comprehensive} and the new citrus dataset \cite{xiao2025research}, have recently been published. Despite these efforts, a recent survey indicates that only a small fraction of publicly available datasets are collected under real field conditions, with many crops and disease categories remaining underrepresented \cite{george2025past}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{plantdiseasedatasets}
+    \caption{Overview of the geographical coverage and data collection settings of widely used plant disease datasets.}
+    \label{fig:plantdiseasedatasets}
+\end{figure}
+
+In-field plant disease datasets have supported the development of lightweight and tiny deep learning architectures designed for deployment on resource-constrained devices, which facilitates near real-time diagnosis in precision agriculture workflows \cite{gao2025dstanet, murugavalli2025plant, george2025background}. Most existing in-field datasets support detailed analysis of disease stages and nutrient stress. Still, their scope is generally limited to a few crops and conditions and they often combine field images with laboratory and internet-sourced data. In particular, for \textit{brinjal} plants, no widely adopted in-field dataset is currently available for training advanced deep learning models. To address this gap, this study introduces a novel \textit{brinjal} leaf disease dataset collected under natural field environments and capturing realistic variations in background complexity, illumination, leaf orientation and disease manifestation. The proposed dataset aims to provide a benchmark for training, evaluating and deploying deep learning models for \textit{brinjal} disease recognition in real agricultural settings. The value of the dataset and primary contributions are summarised below. 
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=0.45\textwidth]{srilankaregions.pdf}
+  \caption{The regions in Sri Lanka from where the leaf images are collected for the \texttt{SLIF-Brinjal} dataset. The red regions (Jaffna and Killinochchi) represent the dry zone, while the green region (Kandy) represents the wet zone.}
+  \label{fig:srilankaregions}
+  \end{center}
+\end{figure}
+
+\begin{enumerate}
+    \item \textbf{Novel dataset:} A fully in-field \textit{brinjal} leaf disease dataset, namely the \texttt{S}ri \texttt{L}anka \texttt{I}n-\texttt{F}ield \texttt{Brinjal} (\texttt{SLIF-Brinjal}) dataset, is presented. This dataset consists of $8,987$ images spanning 7 diseases and healthy categoriesm and is collected across multiple agro-climatic zones, ensuring environmental diversity and real-world applicability.
+
+    \item \textbf{Comprehensive annotation:} All images in the \texttt{SLIF-Brinjal} dataset were annotated by domain experts, and class labels were assigned to the corresponding \textit{brinjal} leaf diseases to provide reliable ground truth.
+
+    \item \textbf{Benchmarking and usability:} A comprehensive set of baseline experiments was performed using state-of-the-art deep learning models to establish benchmark performance. These results demonstrate the suitability of the dataset for in-field plant disease recognition.
+    
+\end{enumerate}
+
+The remainder of this paper is structured as follows. Section \ref{sec:methods} describes the methodology adopted for data acquisition, annotation and preprocessing. Section \ref{sec:datarecord} details the data records, including file structure and accessibility. Section \ref{sec:dataoverview} provides a comprehensive overview of the dataset characteristics and class distribution. Finally, Section \ref{sec:technicalvalidation} presents the technical validation of the dataset to demonstrate its reliability and applicability.
+
+\section{Methods} \label{sec:methods}
+The \texttt{SLIF-Brinjal} dataset was collected in real farming environments in 2024 and 2025 and includes \textit{brinjal} leaves from different growth stages. Leaf samples were obtained from multiple agro-climatic regions in Sri Lanka, such as the wet zone (Kandy) and dry zones (Jaffna and Killinochchi), to capture environmental and geographic diversity, as illustrated in Figure \ref{fig:srilankaregions}. These regions represent diverse climates, soil types and disease manifestations, which makes the dataset more applicable to build practical agriculture applications. In order to mirror the environments encountered in actual farming practice, images were collected using natural light and with minimal intervention.
+
+\subsection{Need and Value of the Dataset}
+Over the past decade, collaborative efforts among stakeholders, such as farmers, researchers, agro-professionals and policymakers, have driven a growing demand for real-world precision agriculture solutions \cite{mansoor2025integration, aijaz2025artificial, cai2025precision}. Developing reliable in-field solutions for precision agriculture and plant disease management requires comprehensive in-field datasets that accurately reflect real-world conditions \cite{dubey2025artificial}. Although precision agriculture has advanced, most plant leaf disease datasets remain confined to lab environments, lacking representation of the diverse conditions found across different agro-climatic regions. As a result, deep learning models cannot be fully leveraged under in-field conditions and hence encounter substantial performance challenges. In the case of \textit{brinjal}, only a handful of datasets exist and among them, just one represents real farming conditions. 
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=1\textwidth]{creationpipeline.pdf}
+  \caption{Workflow structure for the development of the SLIF-Brinjal dataset.}\label{fig:creationpipeline}
+  \end{center}
+\end{figure}
+
+\subsection{Dataset Creation}
+The \texttt{SLIF-Brinjal} dataset was created following a structured workflow that includes data acquisition, class labelling, data augmentation and dataset publishing, as shown in Figure \ref{fig:creationpipeline}. The process initiates with Data Acquisition, where images of \textit{brinjal} leaves are captured via mobile devices. The images undergo a two-stage annotation process, consisting of class labelling and subsequent verification, to ensure high ground-truth accuracy, and are then stored as the \textit{Raw Dataset}. The verified data are then subjected to random augmentation to enhance sample diversity, after which they are archived to form the \textit{Phase I - Dataset}. Following this step, a modified \texttt{AugMix} augmentation strategy is applied to generate an expanded version of the dataset, referred to as the \textit{Phase II - Dataset}.
+
+\subsubsection{Data Acquisition}
+Leaf images were captured with devices with different camera specifications at varying times of day, which better reflects the natural variability in in-field agricultural environments. Five high-resolution mobile devices (\texttt{Samsung A04s}, \texttt{Samsung A30}, \texttt{Samsung A72}, \texttt{Samsung A10s}, \texttt{Nokia 6.1 Plus}, and \texttt{Oppo A37}) were used for image acquisition, and their technical specifications are reported in Table \ref{tab:capuredevices}. Because data were collected by different participants at multiple sites, several imaging devices were used in the acquisition process. Thus, the dataset includes images with different resolutions and sensor types. This, in turn, enables the dataset to accurately represent real-world deployment scenarios, in which deep learning models are expected to process real-time images acquired from heterogeneous camera sources. To further increase variability, images of different dimensions were captured using a range of viewing angles.
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \setlength{\tabcolsep}{8pt}
+    \caption{Device specifications used in data acquisition process of \texttt{SLIF-Brinjal} dataset.}
+    \label{tab:capuredevices}
+    \begin{tabular}{|p{3cm}|p{10cm}|}
+        \hline
+        \textbf{Device} & \textbf{Image resolution details} \\ \hline
+        \texttt{Samsung A04s} & 50 MP, f/1.8 (wide), PDAF; 2 MP, f/2.4 (macro); 2 MP, f/2.4 (depth) \\
+        \texttt{Samsung A30} & 16 MP, f/1.7, 27mm (wide), PDAF; 5 MP, f/2.2, 12mm (ultrawide) \\
+
+        \texttt{Samsung A72} & 64 MP, f/1.8, 26mm (wide), PDAF; 5 MP, f/2.4 (macro) \\
+        
+        \texttt{Samsung A10s} & 13 MP, f/1.8, 28mm (wide), AF; 2 MP, f/2.4 (depth) \\
+        \texttt{Nokia 6.1 Plus} & Dual-sensor rear camera: 16 MP (primary) + 5 MP (depth) \\
+        \texttt{Oppo A37} & 8 MP, f/2.0, 1/3.2", 1.4µm, AF \\ \hline
+    \end{tabular}
+        
+    {\centering \vspace{0.15cm} MP - Megapixel, PDAF - Phase detection auto focus and  AF - Auto focus \par}
+\end{table}
+
+\subsubsection{Class Labelling}
+Following data acquisition, class labels were assigned using a defined annotation protocol. Agricultural pathologists were involved in the procedure to support accurate and reliable identification of plant diseases. At this stage, \textit{brinjal} leaf images were categorised as healthy or into the relevant disease classes. To improve dataset reliability, a cross-validation procedure was applied in which multiple experts independently verified the image labels. Labels were verified iteratively until all annotators agreed on the assigned classifications. Seven disease classes are represented in the dataset, corresponding to three main pathogen categories: \textit{bacteria}, \textit{viruses} and \textit{fungi}. The diseases included in the dataset and their associated pathogen types are illustrated in Figure \ref{fig:pathogenplantdiseases}. The resulting data are subsequently archived as the \textit{Raw Dataset}.
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=\textwidth]{pathogenplantdiseases.pdf}
+  \caption{Illustration of the relationships between plant pathogens and associated diseases.}
+  \label{fig:pathogenplantdiseases}
+  \end{center}
+\end{figure}
+
+\subsubsection{Data Augmentation}
+After labelling, a two-stage data augmentation strategy was applied to mitigate class imbalance commonly observed in in-field datasets while increasing the overall sample size. Prior to these two stages, to maintain consistent input dimensions, all raw images were resized to $640 \times 640$ pixels and the aspect ratio of the raw image is preserved.
+
+In the first stage of augmentation, random augmentation operations were used to create the \textit{Phase I - Dataset}. During this phase, the original image (i.e., samples from the \textit{Raw Dataset}) is preserved, while two additional samples are created by sequentially applying each of the seven augmentation techniques using randomly selected parameters. The data augmentation operations applied in this study include \textit{horizontal} and \textit{vertical flipping}, \textit{random cropping} with a zoom range of $0$ to $+17\%$, \textit{rotations} between $-11^\circ$ and $+11^\circ$, and photometric adjustments comprising \textit{saturation} between $-26\%$ and $+26\%$, \textit{brightness} between $-12\%$ and $+12\%$, \textit{contrast} between $-15\%$ and $+15\%$, and \textit{hue shifts} between $-10^\circ$ and $+10^\circ$.
+
+A second stage augmentation was applied to address class imbalance in the \textit{Phase I - Dataset}. To address class imbalance, this phase utilises a modified \texttt{AugMix} algorithm \cite{hendrycks2019augmix} systematically, with a focus on underrepresented classes. The modified \texttt{AugMix} performs data augmentation by applying a range of image transformations, such as \textit{auto contrast}, \textit{equalise}, \textit{posterise}, \textit{rotate}, \textit{solarise}, \textit{shear\_x}, \textit{shear\_y}, \textit{translate\_x}, \textit{translate\_y}, \textit{color}, \textit{contrast}, \textit{brightness} and \textit{sharpness}. Fig. \ref{fig:modifiedaugmix} shows the sample generation process by the modified \texttt{AugMix}. In this framework, three augmentation streams (i.e., number of augmentation chains $k = 3$) operate concurrently, each stochastically selecting one to three transformations with a severity level $M = 4$. The augmented outputs are integrated using Dirichlet-weighted mixing with distribution parameter $\alpha=1$ and added back to the original image through a skip connection to ensure that essential disease patterns remain intact. Following the second stage augmentation, the images were manually examined and distorted samples were discarded to maintain the suitability of the dataset for model training. \texttt{AugMix} augmentation was applied to all classes other than \textit{Cercospora} Leaf Spot, which already had sufficient sample representation. The \textit{Phase II – Dataset} is then consolidated, which integrates images from the \textit{Phase I – Dataset} along with those generated through the second-stage \texttt{AugMix} augmentation process.
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=0.9\textwidth]{modifiedaugmix.pdf}
+  \caption{The illustration of the modified \texttt{AugMix} augmentation used in the second phase of augmentation.}
+  \label{fig:modifiedaugmix}
+  \end{center}
+\end{figure}
+
+\section{Data Record} \label{sec:datarecord}
+The \texttt{SLIF-Brinjal} dataset is publicly available at \textcolor{red}{[Repository Name]} and is permanently archived under the identifier DOI: \textcolor{red}{[DOI to be inserted upon publication]}. The dataset is released for research and educational purposes only under \textit{Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)} copyright. Users are required to cite this publication when using the dataset in their research or academic work. Commercial use, modification or redistribution for commercial applications is not permitted without prior written consent from the corresponding author. 
+
+\section{Data Overview} \label{sec:dataoverview}
+The \texttt{SLIF-Brinjal} dataset provides field-based images intended for reproducible studies in \textit{brinjal} disease recognition and precision agriculture. The dataset reflects ecological validity by capturing disease symptoms as they occur in outdoor field settings with varying lighting, backgrounds, occlusion and leaf overlap. These characteristics align with the environments in which deep learning models are commonly used in agricultural and mobile settings. Table \ref{tab:metadata} summarises the main metadata details of the newly constructed \texttt{SLIF-Brinjal} dataset.
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \setlength{\tabcolsep}{10pt}
+    \caption{Dataset metadata information with details.}
+    \label{tab:metadata}
+    % \small
+    \begin{tabular}{|p{3.4cm}|p{12.6cm}|}
+        \hline
+        \textbf{Metadata} & \textbf{Details} \\ \hline
+        Cultivar & Plastic , Thrinelvely Purple and Hybrid F1 704  \\ \hline
+        Broad subject area & Computer science, agricultural science, machine learning and deep learning \\ \hline
+        Specific subject area & Image processing and plant disease recognition \\ \hline
+        Acquisition method & Captured using various high-resolution camera devices. See Table~\ref{tab:capuredevices} for camera specifications \\ \hline
+        Data format & Raw and augmented \\ \hline
+        Annotation & Class labels and disease annotations were provided by pathologists \\ \hline
+        Region of interest (RoI) & Leaf \\ \hline
+        Collection parameters & Disease and healthy leaf images of brinjal plants \\ \hline
+        Geographical location & Country: Sri Lanka\newline
+        Zones: Wet zone (Kandy) and Dry zone (Jaffna and Killinochchi ) \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Dataset Statistics}
+The dataset development followed a phased expansion strategy. A total of 1,459 raw images were gathered to form the initial dataset, representing eight classes, which include \textit{Bacterial Blight}, \textit{Bacterial Leaf Spot}, \textit{Bacterial Wilt}, \textit{Cercospora Leaf Spot}, \textit{Littleleaf}, \textit{Mosaic Virus}, \textit{Powdery Mildew} and \textit{Healthy}. These raw images constitute the foundational dataset collected directly from field conditions. Following the first stage of random augmentation, the dataset expanded to 4,377 images, referred to as the \textit{Phase I - Dataset}. This phase preserves the original data distribution while increasing sample diversity through controlled geometric and photometric transformations. A second augmentation stage based on a modified \texttt{AugMix} strategy was then applied to address residual class imbalance. This resulted in a final dataset of 8,987 images, referred to as the \textit{Phase II - Dataset}.
+
+The distribution of images across classes and dataset phases is detailed in Table \ref{tab:datasetstats}. In the \textit{Raw Dataset}, \textit{Cercospora Leaf Spot} accounts for 25.9\% of samples and \textit{Littleleaf} for 7.3\%. The imbalance ratio is 3.53, which shows a clear class imbalance. On the other hand, although minor variations in class sizes remain, the \textit{Phase II - Dataset} exhibits a substantially improved balance compared to the raw collection. The final class sizes range from 1,002 to 1,208 samples, reducing the imbalance ratio to 1.21. The reduced dispersion reflects better distribution balance while maintaining limited natural variation. Overall, the phased approach provides access to both original and augmented data for flexible experimentation and fair comparison.
+
+\begin{table*}[ht]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \setlength{\tabcolsep}{8pt}
+    \caption{Overview of the data statistics of the \texttt{SLIF-Brinjal} dataset across different phases.}
+    \label{tab:datasetstats}
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        \multirow{2}{*}{Disease} &
+          \multicolumn{3}{|c|}{Number of Images} \\ \cline{2-4} 
+         & Raw Dataset & Phase I - Dataset & Phase II - Dataset \\ \hline
+        Bacterial Blight      & 174 &	522 &	1193 \\
+        Bacterial Leaf Spot      &132	&396	&1208 \\
+        Bacterial Wilt              &121	&363	&1138 \\
+        Cercospora Leaf Spot      &378	&1134	&1134 \\
+        Little Leaf           &107	&321	&1002 \\
+        Mosaic Virus               & 270	&810	&1193 \\
+        Powdery Mildew        & 148	&444	&1029 \\ 
+         Healthy	            & 129	&387	&1090 \\\hline
+        \textbf{Total} & \textbf{1459}  & \textbf{4377} & \textbf{8987}  \\ \hline
+    \end{tabular}
+\end{table*}
+
+Beyond the imbalance ratio, additional statistical analysis were applied to quantify class balance across phases. The coefficient of variation declined from 0.62 (\textit{Raw Dataset}) to 0.58 (\textit{Phase I - Dataset}) and 0.06 (\textit{Phase II - Dataset}), Shannon entropy increased from 2.02 to 2.23 and 2.57 bits, and the Gini coefficient decreased from 0.23 to 0.18 and 0.03, indicating progressively more uniform distributions. From a statistical learning perspective, reducing class imbalance mitigates bias toward majority classes, stabilises decision boundaries and enhances generalisation. Keeping all three datasets allows researchers to explore how differences in class distribution influence model robustness. Furthermore, this is a clear framework for testing representation learning in realistic, expanded, and nearly balanced datasets.
+
+\subsection{Dataset Structure and Image Naming Convention}
+Figure~\ref{fig:folderstructure} illustrates the organisation of the \texttt{SLIF-Brinjal} dataset. The Raw, Phase I and Phase II datasets are provided in separate directories to preserve traceability between the original and augmented samples. This organisation enables users to select the dataset phase that best aligns with their specific experimental requirements. Each sub-dataset follows a class-based directory structure, with individual folders assigned to each class and containing the corresponding images.
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=\textwidth]{folderstructure.pdf}
+  \caption{The structure of the publicly available \texttt{SLIF-Brinjal} dataset.}
+  \label{fig:folderstructure}
+  \end{center}
+\end{figure}
+
+The dataset is provided without predefined splits for training, validation and testing. Instead, as stratified k-fold cross-validation is recommended to obtain reliable performance estimates and improve generalisation, dataset users are encouraged to define their own partitions according to their experimental design. Because there are no fixed splits, users can choose balanced samples and test across regions or dataset phases. To prevent data leakage, augmented images can be grouped with their corresponding raw samples during the splitting process.
+
+A systematic naming convention used for raw and augmented images in all three datasets. For the raw images, each filename follows the format \texttt{[AA]\_[BB]\_[CC].jpg}, where \texttt{[AA]} represents the class name, and \texttt{[BB]} and \texttt{[CC]} together indicate the image number. For randomly augmented images, an additional suffix, \texttt{\_a[X]}, is appended to the original filename, where \texttt{[X]} denotes the specific augmented sample number, while the class name and image number remain unchanged. Finally, for \texttt{AugMix} augmented images, the filename incorporates both the random augmentation and the \texttt{AugMix} augmentation by adding \texttt{\_a[X]\_am[Y]}, where \texttt{[X]} represents the random augmentation number and \texttt{[Y]} denotes the \texttt{AugMix} transformation number. Accordingly, each filename encodes the image’s class, original number and type of augmentation, which helps manage the dataset and ensures experiments can be reliably reproduced.
+
+\section{Technical Validation} \label{sec:technicalvalidation}
+Technical validation of the \texttt{SLIF-Brinjal} dataset was conducted to determine its suitability for benchmarking deep learning models under in-field conditions. Lightweight deep learning models are well-suited to in-field deployment, as their reduced computational complexity and lower memory requirements facilitate efficient operation on resource-constrained devices \cite{albahli2025agrifusionnet, janarthan2025efficient}. Therefore, a set of lightweight deep learning models was selected as benchmarks for evaluation, as given below.
+
+\begin{enumerate}
+    \item \textbf{MobileNetV2} \cite{sandler2018mobilenetv2} is an efficient convolutional neural network that employs inverted residual blocks and linear bottlenecks to reduce computational cost while preserving representational capacity, which makes it well suited for resource-constrained in-field applications.
+
+    \item \textbf{MobileNetV3-Small} \cite{howard2019searching} improves the accuracy–efficiency balance by using neural architecture search, depthwise separable convolutions, squeeze-and-excitation modules and the h-swish activation function, enabling compact models that perform well on plant disease datasets with limited computational resources.
+
+    \item \textbf{ShuffleNetV2 (0.5)} \cite{ma2018shufflenet} achieves lightweight and fast inference through channel split and shuffle operations that enhance feature reuse while minimising memory access costs, supporting efficient plant disease classification on low-power devices without significant accuracy loss.
+
+    \item \textbf{SqueezeNet (1.0)} \cite{iandola2016squeezenet} utilises fire modules, which combine squeeze and expand layers, to drastically reduce model size while retaining competitive classification performance. This makes it suitable for deployment in scenarios where storage and computation are limited but reliable disease recognition is required.
+\end{enumerate}
+
+Although direct evaluations of these models on plant disease datasets remain limited, related lightweight models have reported high classification accuracy (often exceeding 99\%) and rapid inference on benchmark datasets \cite{appati2026software, rahaman2026customized, haque2026attention}. These findings suggest their potential for efficient and reliable plant disease recognition in in-field settings. Hence, these lightweight models are proven to be suitable for practical agricultural applications where both efficiency and precision are critical.
+
+The benchmark experiments were implemented using the PyTorch\footnote{https://pytorch.org/} open-source deep learning framework and trained on a high-performance workstation. The computational platform consisted of dual Intel\textsuperscript{\textregistered} Xeon\textsuperscript{\textregistered} 4215R processors and two NVIDIA RTX A6000 GPUs, each with 48 GB of VRAM. The system was further equipped with 128 GB of DDR4 RAM. To validate these datasets, experiments were performed using stratified 5-fold cross-validation with the selected lightweight models. To maintain experimental integrity and avoid data leakage, a group-aware splitting strategy was applied. The images were divided into training, validation and test sets at the subject level before augmentation. All augmented derivatives were assigned to the same partition as their corresponding source image. During training, the learning rate was decreased from $1 \times 10^{-4}$ to $1 \times 10^{-5}$ using a cosine annealing schedule with $T_{\text{max}}$ = 500. Model regularisation was achieved using a weight decay of $0.01$ and label smoothing with a factor of $0.05$. Training was performed with a batch size of $16$, early stopping with a patience of $30$ epochs, and all models were trained from scratch.
+
+Table \ref{tab:results} presents the results obtained for these models on the \textit{Phase I - Dataset} and \textit{Phase II - Dataset}. In \textit{Phase I - Dataset}, performance remains moderate across all architectures, with MobileNetV2 marginally outperforming the others. The three architectures, MobileNetV2, MobileNetV3-Small and ShuffleNetV2 (0.5), yield closely comparable results, which suggests that the dominant role is played by dataset characteristics rather than structural differences between models. The comparatively lower results of SqueezeNet (1.0) across all metrics point to potential limitations in representational capacity when dealing with complex in-field variability. The relatively high standard deviations in \textit{Phase I - Dataset} suggest that model performance fluctuates across folds, possibly owing to class imbalance or variations in visual characteristics.
+
+\begin{table}[h]
+    \centering
+    \caption{Benchmark performance (mean $\pm$ standard deviation) obtained using stratified cross-validation on \textit{Phase I - Dataset} and \textit{Phase II - Dataset}.}
+    \label{tab:results}
+    \renewcommand{\arraystretch}{1.5}
+    \setlength{\tabcolsep}{6pt}
+    \begin{tabular}{|l|l|c|c|c|c|}
+    \hline
+    \textbf{Dataset} & \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1 score} \\
+    \hline
+    \multirow{4}{*}{Phase I}
+    
+    & MobileNetV3-Small
+    & 0.8072 $\pm$ 0.0246
+    & 0.8040 $\pm$ 0.0258
+    & 0.8156 $\pm$ 0.0231
+    & 0.8075 $\pm$ 0.0242 \\
+    
+    & ShuffleNetV2 (0.5)
+    & 0.7953 $\pm$ 0.0222
+    & 0.7938 $\pm$ 0.0224
+    & 0.8033 $\pm$ 0.0211
+    & 0.7966 $\pm$ 0.0211 \\
+    
+    & SqueezeNet (1.0)
+    & 0.7368 $\pm$ 0.0152
+    & 0.7469 $\pm$ 0.0120
+    & 0.7455 $\pm$ 0.0147
+    & 0.7413 $\pm$ 0.0121 \\
+
+    & \textbf{MobileNetV2}
+    & \textbf{0.8191 $\pm$ 0.0270}
+    & \textbf{0.8219 $\pm$ 0.0299}
+    & \textbf{0.8231 $\pm$ 0.0242}
+    & \textbf{0.8212 $\pm$ 0.0273} \\
+    
+    \hline
+    \multirow{4}{*}{Phase II}
+    & MobileNetV2
+    & 0.9389 $\pm$ 0.0122
+    & 0.9397 $\pm$ 0.0122
+    & 0.9401 $\pm$ 0.0123
+    & 0.9395 $\pm$ 0.0126 \\
+    
+    & ShuffleNetV2 (0.5)
+    & 0.9288 $\pm$ 0.0136
+    & 0.9291 $\pm$ 0.0134
+    & 0.9302 $\pm$ 0.0132
+    & 0.9292 $\pm$ 0.0134 \\
+    
+    & SqueezeNet (1.0)
+    & 0.8950 $\pm$ 0.0283
+    & 0.8983 $\pm$ 0.0261
+    & 0.8966 $\pm$ 0.0280
+    & 0.8966 $\pm$ 0.0273 \\
+
+    & \textbf{MobileNetV3-Small}
+    & \textbf{0.9417 $\pm$ 0.0093}
+    & \textbf{0.9424 $\pm$ 0.0095}
+    & \textbf{0.9425 $\pm$ 0.0092}
+    & \textbf{0.9421 $\pm$ 0.0093} \\
+    
+    \hline
+    \end{tabular}
+\end{table}
+
+In contrast, results on \textit{Phase II - Dataset} exhibit uniformly high performance across all models, accompanied by markedly reduced standard deviations. This increase suggests that the data have become more representative and of higher quality, but the 12–13\% improvement in accuracy among the leading models calls for careful interpretation. A comparable trend is observed for precision, recall and F1 score, all of which demonstrate improved values in the \textit{Phase II - Dataset} for all models. Such consistent improvements across models indicate that the dataset modifications, rather than model superiority, are the dominant factor influencing performance. Although MobileNetV3-Small achieves the highest metrics in \textit{Phase II - Dataset}, its advantage over MobileNetV2 is marginal, raising questions about the practical significance of the difference. The reduced variability across folds suggests improved generalisation. However, while the results demonstrate strong benchmarking performance, it may also reflect increased homogeneity in the dataset.
+
+Confusion matrices shown in Figure \ref{fig:confusion} illustrate the class-wise prediction pattern of the two best-performing models: MobileNetV2 on \textit{Phase I - Dataset} and MobileNetV3-Small on \textit{Phase II - Dataset}. In both cases, the dominant diagonal entries indicate that most samples are correctly classified. However, clear performance differences are evident. On \textit{Phase I - Dataset}, several classes such as Bacterial Blight, Mosaic virus and Powdery Mildew show moderate diagonal accuracies, while Littleleaf and Healthy achieve comparatively higher recognition rates. In contrast, on the \textit{Phase II - Dataset},  MobileNetV3-Small demonstrates consistently high diagonal dominance across all eight classes, with most per-class accuracies exceeding 90\%. Misclassifications are substantially reduced, although minor confusion persists between Cercospora Leaf Spot and Mosaic Virus, which remain the most challenging pair due to similar leaf spot characteristics.
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=\textwidth]{confusion.pdf}
+  \caption{The t-SNE illustration of the embeddings generated by MobileNetV3-Small on both (a) \textit{Phase I - Dataset} and (b) \textit{Phase II - Dataset}.}
+  \label{fig:confusion}
+  \end{center}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=\textwidth]{t-sne.pdf}
+  \caption{The t-SNE illustration of the embeddings generated by MobileNetV3-Small on both (a) \textit{Phase I - Dataset} and (b) \textit{Phase II - Dataset}.}
+  \label{fig:t-sne}
+  \end{center}
+\end{figure}
+
+\bibliography{sample}
+
+\end{document}
