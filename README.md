@@ -6,6 +6,8 @@
 
 SLIF-Brinjal (Sri Lanka In-Field Brinjal) is a comprehensive, field-acquired image collection containing **8,987 images** representing seven diseases and healthy leaves. The dataset was collected across multiple agro-climatic zones in Sri Lanka and includes realistic variations in background complexity, illumination, and leaf orientation.
 
+**Official Dataset Link**: [Mendeley Data](https://data.mendeley.com/preview/6yg6vktrc2?a=2d8cd4ad-ab73-46f1-b908-0b1b7bd8b97a)
+
 ![SLIF-Brinjal Data Regional Distribution](Images/srilankaregions.png)
 
 ### Diseases Represented
