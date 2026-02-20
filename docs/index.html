@@ -32,7 +32,7 @@
         </p>
         <div class="hero-buttons">
           <a href="https://data.mendeley.com/preview/6yg6vktrc2?a=2d8cd4ad-ab73-46f1-b908-0b1b7bd8b97a" class="btn primary" target="_blank">Explore Dataset</a>
-          <a href="https://github.com/SLIF-Project" class="btn secondary"
+          <a href="https://github.com/romiyal/SLIF-Brinjal.git" class="btn secondary" target="_blank"
             >View Code</a
           >
         </div>
@@ -44,13 +44,20 @@
       <section id="abstract" class="section">
         <div class="container">
           <h2>Project Abstract</h2>
-          <p>
-            Early in-field recognition of plant diseases contributes to lower
-            crop losses and improved precision agriculture. This study presents
-            the **SLIF-Brinjal** dataset, a field-acquired image collection
-            containing **8,987 images** representing seven diseases and healthy
-            leaves, collected across multiple agro-climatic zones in Sri Lanka.
-          </p>
+          <div class="split-content">
+            <div class="text-block">
+              <p>
+                Early in-field recognition of plant diseases contributes to lower
+                crop losses and improved precision agriculture. This study presents
+                the **SLIF-Brinjal** dataset, a field-acquired image collection
+                containing **8,987 images** representing seven diseases and healthy
+                leaves, collected across multiple agro-climatic zones in Sri Lanka.
+              </p>
+            </div>
+            <div class="visual-block">
+              <img src="../Images/plantdiseasedatasets.png" alt="Dataset Comparison" class="project-img floating">
+            </div>
+          </div>
           <div class="abstract-grid">
             <div class="card">
               <h3>8,987</h3>
@@ -89,6 +96,10 @@
                 <li>Powdery Mildew</li>
                 <li>Healthy Leaves</li>
               </ul>
+              <div class="img-group mt-20">
+                <img src="../Images/pathogenplantdiseases.png" alt="Pathogen Visualization" class="project-img small">
+                <img src="../Images/srilankaregions.png" alt="Regional Distribution" class="project-img small">
+              </div>
             </div>
             <div class="dataset-stats">
               <!-- We could add a chart here via JS -->
@@ -137,7 +148,7 @@
               </p>
             </div>
             <div class="method-model">
-              <!-- Model visualization or diagram placeholder -->
+              <img src="../Images/creationpipeline.png" alt="Creation Pipeline" class="project-img wide mb-20">
               <div class="architecture-box">
                 <div class="layer">Stem</div>
                 <div class="layer">Stage 1 (Dilated Bottleneck)</div>
@@ -145,6 +156,7 @@
                 <div class="layer">Stage 3 (Global Attention)</div>
                 <div class="layer">Classifier Head</div>
               </div>
+              <img src="../Images/modifiedaugmix.pnf.png" alt="AugMix Methodology" class="project-img mt-20">
             </div>
           </div>
         </div>
@@ -184,6 +196,12 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div class="results-visuals mt-40">
+            <div class="visual-card">
+               <h3>Model Interpretation (t-SNE)</h3>
+               <img src="../Images/t-sne.png" alt="t-SNE visualization" class="project-img">
+            </div>
           </div>
         </div>
       </section>
