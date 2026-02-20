@@ -9,6 +9,49 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;500;700&display=swap"
       rel="stylesheet"
     />
+    <style>
+      /* Base project image styling */
+      .project-img {
+        display: block;
+        margin: 20px auto;
+        max-width: 100%;
+        height: auto;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      /* Flex container for side-by-side images */
+      .dataset-images-row {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap; /* Ensures responsiveness on smaller screens */
+        margin: 40px 0;
+      }
+
+      /* Specific styling for the side-by-side visuals */
+      .dataset-visual {
+        height: 300px; 
+        width: auto;
+        object-fit: contain;
+        border-radius: 8px;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        cursor: pointer;
+        filter: grayscale(10%); /* Slight muted look by default */
+      }
+
+      /* Hover Effects */
+      .dataset-visual:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        filter: grayscale(0%) brightness(1.05);
+      }
+
+      .img-container-full {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 40px;
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -26,15 +69,10 @@
     <section class="hero">
       <div class="hero-content">
         <h1>SLIF-Brinjal</h1>
-        <p>
-          An In-Field Leaf Dataset for Disease Recognition in Precision
-          Agriculture
-        </p>
+        <p>An In-Field Leaf Dataset for Disease Recognition in Precision Agriculture</p>
         <div class="hero-buttons">
           <a href="https://data.mendeley.com/preview/6yg6vktrc2?a=2d8cd4ad-ab73-46f1-b908-0b1b7bd8b97a" class="btn primary" target="_blank">Explore Dataset</a>
-          <a href="https://github.com/romiyal/SLIF-Brinjal.git" class="btn secondary" target="_blank"
-            >View Code</a
-          >
+          <a href="https://github.com/romiyal/SLIF-Brinjal.git" class="btn secondary" target="_blank">View Code</a>
         </div>
       </div>
       <div class="hero-overlay"></div>
@@ -47,17 +85,15 @@
           <div class="split-content">
             <div class="text-block">
               <p>
-                Early in-field recognition of plant diseases contributes to lower
-                crop losses and improved precision agriculture. This study presents
-                the **SLIF-Brinjal** dataset, a field-acquired image collection
-                containing **8,987 images** representing seven diseases and healthy
-                leaves, collected across multiple agro-climatic zones in Sri Lanka.
+                Early in-field recognition of plant diseases contributes to lower crop losses and improved precision agriculture. This study presents the <strong>SLIF-Brinjal</strong> dataset, a field-acquired image collection containing <strong>8,987 images</strong> representing seven diseases and healthy leaves.
               </p>
             </div>
-            <div class="visual-block">
-              <img src="../Images/plantdiseasedatasets.png" alt="Dataset Comparison" class="project-img floating">
-            </div>
           </div>
+          
+          <div class="img-container-full">
+            <img src="../Images/plantdiseasedatasets.png" alt="Dataset Comparison" class="project-img">
+          </div>
+
           <div class="abstract-grid">
             <div class="card">
               <h3>8,987</h3>
@@ -68,8 +104,8 @@
               <p>Total Classes</p>
             </div>
             <div class="card">
-              <h3>94%+</h3>
-              <p>Acc (P-II)</p>
+              <h3>Lightweight</h3>
+              <p>Model Testing</p>
             </div>
           </div>
         </div>
@@ -81,10 +117,7 @@
           <div class="dataset-grid">
             <div class="dataset-info">
               <p>
-                The dataset was built in stages, starting with field images and
-                later expanded using controlled augmentation and a modified
-                **AugMix** method to balance classes while preserving ecological
-                validity.
+                The dataset was built in stages, starting with field images and expanded using a modified <strong>AugMix</strong> method to balance classes while preserving ecological validity.
               </p>
               <ul class="disease-list">
                 <li>Bacterial Blight</li>
@@ -96,13 +129,8 @@
                 <li>Powdery Mildew</li>
                 <li>Healthy Leaves</li>
               </ul>
-              <div class="img-group mt-20">
-                <img src="../Images/pathogenplantdiseases.png" alt="Pathogen Visualization" class="project-img small">
-                <img src="../Images/srilankaregions.png" alt="Regional Distribution" class="project-img small">
-              </div>
             </div>
             <div class="dataset-stats">
-              <!-- We could add a chart here via JS -->
               <h3>Phased Expansion</h3>
               <table>
                 <thead>
@@ -113,24 +141,17 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Raw</td>
-                    <td>Direct Field Images</td>
-                    <td>1,459</td>
-                  </tr>
-                  <tr>
-                    <td>Phase I</td>
-                    <td>Random Augmentation</td>
-                    <td>4,377</td>
-                  </tr>
-                  <tr>
-                    <td>Phase II</td>
-                    <td>Modified AugMix</td>
-                    <td>8,987</td>
-                  </tr>
+                  <tr><td>Raw</td><td>Direct Field Images</td><td>1,459</td></tr>
+                  <tr><td>Phase I</td><td>Random Augmentation</td><td>4,377</td></tr>
+                  <tr><td>Phase II</td><td>Modified AugMix</td><td>8,987</td></tr>
                 </tbody>
               </table>
             </div>
+          </div>
+
+          <div class="dataset-images-row">
+            <img src="../Images/pathogenplantdiseases.png" alt="Pathogen Visualization" class="dataset-visual">
+            <img src="../Images/srilankaregions.png" alt="Regional Distribution" class="dataset-visual">
           </div>
         </div>
       </section>
@@ -141,23 +162,11 @@
           <div class="method-content">
             <div class="method-text">
               <p>
-                We evaluated the dataset using lightweight deep learning models
-                with stratified five-fold cross-validation. This approach
-                establishes the dataset as suitable for training and assessing
-                resource-efficient models in in-field settings.
+                The research focuses on the performance of the dataset across standard lightweight architectures. We utilize a creation pipeline that balances the dataset through advanced augmentation.
               </p>
             </div>
-            <div class="method-model">
-              <img src="../Images/creationpipeline.png" alt="Creation Pipeline" class="project-img wide mb-20">
-              <div class="architecture-box">
-                <div class="layer">Stem</div>
-                <div class="layer">Stage 1 (Dilated Bottleneck)</div>
-                <div class="layer active">Affix Attention Block</div>
-                <div class="layer">Stage 3 (Global Attention)</div>
-                <div class="layer">Classifier Head</div>
-              </div>
-              <img src="../Images/modifiedaugmix.pnf.png" alt="AugMix Methodology" class="project-img mt-20">
-            </div>
+            <img src="../Images/creationpipeline.png" alt="Creation Pipeline" class="project-img">
+            <img src="../Images/modifiedaugmix.pnf.png" alt="AugMix Methodology" class="project-img">
           </div>
         </div>
       </section>
@@ -165,6 +174,7 @@
       <section id="benchmark" class="section alt-bg">
         <div class="container">
           <h2>Benchmark Results</h2>
+          <p>Performance comparison across standard lightweight architectures using stratified five-fold cross-validation.</p>
           <div class="table-container">
             <table>
               <thead>
@@ -176,24 +186,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>MobileNetV3-Small</td>
-                  <td>0.9417</td>
-                  <td>0.9424</td>
-                  <td>0.9421</td>
-                </tr>
-                <tr>
-                  <td>MobileNetV2</td>
-                  <td>0.9389</td>
-                  <td>0.9397</td>
-                  <td>0.9395</td>
-                </tr>
-                <tr>
-                  <td>ShuffleNetV2</td>
-                  <td>0.9288</td>
-                  <td>0.9291</td>
-                  <td>0.9292</td>
-                </tr>
+                <tr><td>MobileNetV3-Small</td><td>0.9417</td><td>0.9424</td><td>0.9421</td></tr>
+                <tr><td>MobileNetV2</td><td>0.9389</td><td>0.9397</td><td>0.9395</td></tr>
+                <tr><td>ShuffleNetV2</td><td>0.9288</td><td>0.9291</td><td>0.9292</td></tr>
+                <tr><td>SqueezeNet</td><td>0.8954</td><td>0.8960</td><td>0.8952</td></tr>
               </tbody>
             </table>
           </div>
@@ -208,12 +204,7 @@
     </main>
 
     <footer>
-      <p>
-        &copy; 2025 SLIF-Brinjal Project. Department of Computer Engineering,
-        University of Peradeniya.
-      </p>
+      <p>&copy; 2025 SLIF-Brinjal Project. University of Peradeniya.</p>
     </footer>
-
-    <script src="script.js"></script>
   </body>
 </html>
